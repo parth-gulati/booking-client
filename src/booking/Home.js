@@ -1,7 +1,12 @@
+import {useSelector, useStore} from 'react-redux'
+
 const Home = () => {
+
+    const state = useSelector((state)=>state);
+
     return (
         <div className="container-fluid h1 p-5 text-center">
-            Home Page
+            Home Page {JSON.stringify(state)}
         </div>
     )
 }
