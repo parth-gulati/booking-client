@@ -3,13 +3,25 @@ import ConnectNav from "../components/ConnectNav";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { HomeOutlined } from "@ant-design/icons";
+import { createConnectAccount } from "../actions/stripe";
+import { useState } from "react";
+import { toast } from "react-toastify";
 
 const DashboardSeller = () => {
   const { auth } = useSelector((state) => ({ ...state }));
   const { user } = auth;
+  const [loading, setLoading] = useState(false);
 
-  const handleClick = () => {
-    //
+  const handleClick = async () => {
+    setLoading(true);
+    try {
+      let res = await createConnectAccount(auth.token);
+      console.log(res);
+    } catch (err) {
+      console.log(err);
+      toast.error("Stripe Connect Error: " + err.message);
+      setLoading(false);
+    }
   };
 
   const connected = () => (
@@ -37,8 +49,12 @@ const DashboardSeller = () => {
             <p className="lead">
               MERN partners with stripe to transfer earnings to your bank
             </p>
-            <button onClick={handleClick} className="btn btn-primary mb-3">
-              Setup Payouts
+            <button
+              disabled={loading}
+              onClick={handleClick}
+              className="btn btn-primary mb-3"
+            >
+              {loading ? "Processing..." : "Setup Payouts"}
             </button>
             <p className="text-muted">
               <small>
